@@ -77,10 +77,6 @@ export default async function Hero() {
                   loop
                   muted
                 />
-                <div
-                  className="absolute inset-0"
-                  style={{ pointerEvents: "none" }}
-                ></div>
               </div>
             ))}
           </div>
@@ -94,10 +90,6 @@ export default async function Hero() {
                   loop
                   muted
                 />
-                <div
-                  className="absolute inset-0"
-                  style={{ pointerEvents: "none" }}
-                ></div>
               </div>
             ))}
           </div>
