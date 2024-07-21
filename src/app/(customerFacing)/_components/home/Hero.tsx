@@ -74,6 +74,7 @@ export default async function Hero() {
                   src={video.url}
                   className="w-full rounded-md h-full object-cover"
                   autoPlay
+                  playsInline
                   loop
                   controls={false}
                   controlsList="nofullscreen"
@@ -91,6 +92,7 @@ export default async function Hero() {
                   autoPlay
                   controlsList="nofullscreen"
                   loop
+                  playsInline
                   controls={false}
                   muted
                 />
