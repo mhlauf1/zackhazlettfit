@@ -69,7 +69,7 @@ export default async function Hero() {
         <div className="absolute inset-0 grid grid-cols-2 gap-3 md:gap-4">
           <div className="animate-scroll">
             {videos.slice(0, 4).map((video: any, index: number) => (
-              <div key={index} className="relative h-auto  -mt-8 mb-12">
+              <div key={index} className="relative h-auto -mt-8 mb-12">
                 <video
                   src={video.url}
                   className="w-full rounded-md h-full object-cover"
@@ -77,6 +77,10 @@ export default async function Hero() {
                   loop
                   muted
                 />
+                <div
+                  className="absolute inset-0"
+                  style={{ pointerEvents: "none" }}
+                ></div>
               </div>
             ))}
           </div>
@@ -90,6 +94,10 @@ export default async function Hero() {
                   loop
                   muted
                 />
+                <div
+                  className="absolute inset-0"
+                  style={{ pointerEvents: "none" }}
+                ></div>
               </div>
             ))}
           </div>
