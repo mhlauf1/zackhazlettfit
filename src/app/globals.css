@@ -85,6 +85,11 @@
     font-size: 3rem;
   }
 }
+@media (max-width: 500px) {
+  .heroTextSize {
+    font-size: 2.5rem;
+  }
+}
 
 @keyframes scroll {
   0% {

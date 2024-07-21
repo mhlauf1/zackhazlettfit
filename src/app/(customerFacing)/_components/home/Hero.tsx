@@ -52,7 +52,7 @@ export default async function Hero() {
           {heroSection.heading}
         </h1>
 
-        <div className="md:mt-auto flex gap-y-8  flex-col  mt-10 gap-x-6 items-start lg:gap-x-12">
+        <div className="md:mt-auto flex gap-y-8  flex-col  mt-6 gap-x-6 items-start lg:gap-x-12">
           <p className="text-md md:text-2xl mt-4 md:mt-10 md:leading-8 w-[95%] md:w-[60%]  text-gray-600">
             {heroSection.subHeading}
           </p>
