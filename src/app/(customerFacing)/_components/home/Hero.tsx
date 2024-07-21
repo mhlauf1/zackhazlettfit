@@ -75,6 +75,8 @@ export default async function Hero() {
                   className="w-full rounded-md h-full object-cover"
                   autoPlay
                   loop
+                  controls={false}
+                  controlsList="nofullscreen"
                   muted
                 />
               </div>
@@ -87,7 +89,9 @@ export default async function Hero() {
                   src={video.url}
                   className="w-full h-full rounded-md object-cover"
                   autoPlay
+                  controlsList="nofullscreen"
                   loop
+                  controls={false}
                   muted
                 />
               </div>
