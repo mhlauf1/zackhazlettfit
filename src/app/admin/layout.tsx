@@ -1,4 +1,4 @@
-import { Nav, NavLink } from "@/app/(customerFacing)/_components/Nav";
+import { Nav, NavLink } from "@/app/(customerFacing)/_components/navbar/Nav";
 import TopBar from "./_components/TopBar";
 import SideBar from "./_components/SideBar";
 

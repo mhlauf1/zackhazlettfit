@@ -1,9 +1,28 @@
 "use client";
-
+import MobileMenu from "./mobile-nav";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentProps, ReactNode } from "react";
+
+const mobileMenu = [
+  {
+    title: "Home",
+    path: "/",
+  },
+  {
+    title: "Programs",
+    path: "/products",
+  },
+  {
+    title: "About",
+    path: "/about",
+  },
+  {
+    title: "My Orders",
+    path: "/orders",
+  },
+];
 
 export function Nav({ children }: { children: ReactNode }) {
   return (
@@ -13,6 +32,9 @@ export function Nav({ children }: { children: ReactNode }) {
         <Link href="/" className="text-sm uppercase font-bold tracking-wider	">
           Zack Hazlett Fitness
         </Link>
+      </div>
+      <div className="block flex-none md:hidden">
+        <MobileMenu menu={mobileMenu} />
       </div>
       <nav className="hidden md:block">{children}</nav>
     </header>

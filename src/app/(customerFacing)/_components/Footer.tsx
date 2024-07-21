@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="w-full pb-8 pt-12">
       <nav>
-        <div className="flex justify-center gap-x-8 items-center">
+        <div className="flex flex-col gap-y-4 md:flex-row justify-center gap-x-8 items-center">
           <Link
             href="/"
             className="cursor-pointer text-sm leading-6 text-gray-600 hover:text-gray-900"
@@ -17,13 +17,13 @@ export default function Footer() {
             Home
           </Link>
           <Link
-            href="/about"
+            href="/products"
             className="cursor-pointer text-sm leading-6 text-gray-600 hover:text-gray-900"
           >
             Programs
           </Link>
           <Link
-            href="/products"
+            href="/about"
             className="cursor-pointer text-sm leading-6 text-gray-600 hover:text-gray-900"
           >
             About

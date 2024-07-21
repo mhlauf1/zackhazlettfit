@@ -1,6 +1,6 @@
 import Footer from "./_components/Footer";
 export const dynamic = "force-dynamic";
-import { NavLink, Nav } from "./_components/Nav";
+import { NavLink, Nav } from "./_components/navbar/Nav";
 
 export default function Layout({
   children,
