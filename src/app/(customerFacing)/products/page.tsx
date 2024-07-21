@@ -12,7 +12,7 @@ const getProducts = cache(() => {
 
 export default function ProductsPage() {
   return (
-    <section className="py-12 md:py-16 px-6 md:px-20">
+    <section className="py-12 md:py-16 px-4 md:px-20">
       <div className="flex w-full justify-between h-full flex-1 mb-8 flex-col items-start md:w-7/12 ">
         <div className="flex flex-1 flex-col items-start">
           <span className="font-inter rounded-full bg-neutral-100 px-4 py-3 uppercase tracking-wider text-xs font-semibold leading-6 text-neutral-900">

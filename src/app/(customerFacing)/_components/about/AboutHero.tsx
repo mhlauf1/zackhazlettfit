@@ -30,7 +30,7 @@ const AboutHero = (props: Props) => {
             fill="url(#0787a7c5-978c-4f66-83c7-11c213f99cb7)"
           />
         </svg>
-        <div className="relative flex h-auto lg:px-20 px-6 flex-col gap-y-16 pb-10 md:pb-24 pt-4 md:pt-28 md:flex-row md:items-center md:py-24">
+        <div className="relative flex h-auto lg:px-20 px-4 flex-col gap-y-16 pb-10 md:pb-24 pt-4 md:pt-28 md:flex-row md:items-center md:py-24">
           <div className="flex w-full justify-between  flex-col items-start md:w-7/12 ">
             <div className="flex mt-8 md:mt-12 flex-col items-start">
               <span className="font-inter bg-neutral-100 rounded-full px-4 py-3  uppercase tracking-wider text-xs font-semibold leading-6 text-neutral-800">
