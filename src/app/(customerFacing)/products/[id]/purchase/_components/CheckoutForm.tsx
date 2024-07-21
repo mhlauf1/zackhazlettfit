@@ -39,9 +39,9 @@ const stripePromise = loadStripe(
 
 export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
   return (
-    <div className="max-w-5xl w-full mx-auto space-y-8">
-      <div className="flex gap-8 items-center">
-        <div className="aspect-video flex-shrink-0 w-1/3 relative">
+    <div className="max-w-5xl px-4 w-full mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8 md:items-center">
+        <div className="aspect-video flex-shrink-0 w-3/5 md:w-1/3 relative">
           <Image
             src={product.imagePath}
             fill
@@ -54,7 +54,7 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
             {formatCurrency(product.priceInCents / 100)}
           </div>
           <h1 className="text-2xl font-bold">{product.name}</h1>
-          <div className="line-clamp-3 w-[80%] mt-2 text-muted-foreground">
+          <div className="line-clamp-3 md:w-[80%] mt-2 text-muted-foreground">
             {product.description}
           </div>
         </div>

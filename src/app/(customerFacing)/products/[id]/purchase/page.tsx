@@ -24,7 +24,7 @@ export default async function PurchasePage({
   }
 
   return (
-    <div className="mt-24">
+    <div className="mt-12 md:mt-24">
       <CheckoutForm
         product={product}
         clientSecret={paymentIntent.client_secret}
