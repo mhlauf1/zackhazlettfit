@@ -20,7 +20,7 @@ const getMostPopularProducts = cache(
 
 export default function FeaturedPrograms() {
   return (
-    <section className="px-4 md:px-12 lg:px-20 pt-32  md:pt-64 pb-36">
+    <section className="px-4 md:px-12 lg:px-20 pt-32  md:pt-64 pb-12 md:pb-36">
       <AvailableProgramsHeader />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Suspense

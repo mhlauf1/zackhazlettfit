@@ -7,7 +7,7 @@ import {
 export default function Promotion() {
   return (
     <>
-      <section className="pb-20 px-6 sm:px-10 md:px-20 pt-16 sm:pt-24 mt-24 lg:py-32">
+      <section className="pb-20 px-6 sm:px-10 md:px-20 pt-16 sm:pt-24 mt-8 md:mt-24 lg:py-32">
         <div className="max-w-screen-2xl mx-auto">
           <div className="flex flex-col md:flex-row">
             <div className="flex flex-col flex-1">
