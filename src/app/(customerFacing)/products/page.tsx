@@ -1,25 +1,7 @@
 import { ProductCard, ProductCardSkeleton } from "../_components/ProductCard";
-import db from "@/db/db";
-import cacheManager from "@/lib/cacheManager";
+import getProducts from "@/lib/getProducts"; // Ensure correct path to getProducts
 import { Suspense } from "react";
-
-const CACHE_KEY = "getProducts";
-const CACHE_TTL = 60 * 60 * 24 * 1000; // 24 hours in milliseconds
-
-async function getProducts() {
-  const cachedProducts = cacheManager.get(CACHE_KEY);
-  if (cachedProducts) {
-    return cachedProducts;
-  }
-
-  const products = await db.product.findMany({
-    where: { isAvailableForPurchase: true },
-    orderBy: { name: "asc" },
-  });
-
-  cacheManager.set(CACHE_KEY, products, CACHE_TTL);
-  return products;
-}
+import { Product } from "@prisma/client";
 
 export default function ProductsPage() {
   return (
@@ -62,9 +44,13 @@ export default function ProductsPage() {
 }
 
 async function ProductsSuspense() {
-  const products = await getProducts();
+  const products: Product[] = await getProducts();
 
-  return products.map((product) => (
-    <ProductCard key={product.id} {...product} />
-  ));
+  return (
+    <>
+      {products.map((product) => (
+        <ProductCard key={product.id} {...product} />
+      ))}
+    </>
+  );
 }
