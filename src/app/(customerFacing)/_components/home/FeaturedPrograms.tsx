@@ -1,5 +1,5 @@
 import { Product } from "@prisma/client";
-import { cache } from "@/lib/cache";
+import { cache, invalidateCache } from "@/lib/cache";
 import db from "@/db/db";
 
 import AvailableProgramsHeader from "./AvailableProgramsHeader";
@@ -15,7 +15,7 @@ const getMostPopularProducts = cache(
     });
   },
   ["/", "getMostPopularProducts"],
-  { revalidate: 60 * 60 * 24 }
+  { revalidate: 60 * 60 * 24, tags: ["products"] }
 );
 
 export default function FeaturedPrograms() {
