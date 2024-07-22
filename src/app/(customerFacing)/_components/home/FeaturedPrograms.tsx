@@ -1,22 +1,29 @@
 import { Product } from "@prisma/client";
-import { cache, invalidateCache } from "@/lib/cache";
 import db from "@/db/db";
+import cacheManager from "@/lib/cacheManager";
 
 import AvailableProgramsHeader from "./AvailableProgramsHeader";
 import { Suspense } from "react";
 import { ProductCardSkeleton, ProductCard } from "../ProductCard";
 
-const getMostPopularProducts = cache(
-  () => {
-    return db.product.findMany({
-      where: { isAvailableForPurchase: true },
-      orderBy: { orders: { _count: "desc" } },
-      take: 6,
-    });
-  },
-  ["/", "getMostPopularProducts"],
-  { revalidate: 60 * 60 * 24, tags: ["products"] }
-);
+const CACHE_KEY = "getMostPopularProducts";
+const CACHE_TTL = 60 * 60 * 24 * 1000; // 24 hours in milliseconds
+
+async function getMostPopularProducts() {
+  const cachedProducts = cacheManager.get<Product[]>(CACHE_KEY);
+  if (cachedProducts) {
+    return cachedProducts;
+  }
+
+  const products = await db.product.findMany({
+    where: { isAvailableForPurchase: true },
+    orderBy: { orders: { _count: "desc" } },
+    take: 6,
+  });
+
+  cacheManager.set(CACHE_KEY, products, CACHE_TTL);
+  return products;
+}
 
 export default function FeaturedPrograms() {
   return (

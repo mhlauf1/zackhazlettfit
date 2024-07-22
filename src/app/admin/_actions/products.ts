@@ -1,5 +1,5 @@
 "use server"
-
+import cacheManager from "@/lib/cacheManager";
 import db from "@/db/db"
 import { z } from "zod"
 import fs from "fs/promises"
@@ -126,6 +126,7 @@ export async function deleteProduct(id: string) {
 
     await fs.unlink(product.filePath)
     await fs.unlink(`public${product.imagePath}`)
+    cacheManager.invalidate(["getMostPopularProducts"]);
 
     revalidatePath("/")
     revalidatePath("/products")
