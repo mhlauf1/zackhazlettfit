@@ -24,7 +24,7 @@ export default async function SuccessPage({
   if (product == null) return notFound();
 
   const isSuccess = paymentIntent.status === "succeeded";
-
+  console.log(product, "product data");
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <h1 className="text-4xl font-bold">

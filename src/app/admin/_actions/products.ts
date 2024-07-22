@@ -1,5 +1,5 @@
 "use server"
-import cacheManager from "@/lib/cacheManager";
+
 import db from "@/db/db"
 import { z } from "zod"
 import fs from "fs/promises"
@@ -19,52 +19,40 @@ const addSchema = z.object({
     image: imageSchema.refine(file => file.size > 0, "Required"),
 })
 
-export async function addProduct(
-    prevState: unknown,
-    formData: FormData
-): Promise<unknown> {
-    const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
-    if (!result.success) {
-        return result.error.formErrors.fieldErrors;
+export async function addProduct(prevState: unknown, formData: FormData) {
+    const result = addSchema.safeParse(Object.fromEntries(formData.entries()))
+    if (result.success === false) {
+        return result.error.formErrors.fieldErrors
     }
 
-    const data = result.data;
+    const data = result.data
 
-    console.log(data, 'data here on add product')
+    await fs.mkdir("products", { recursive: true })
+    const filePath = `products/${crypto.randomUUID()}-${data.file.name}`
+    await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()))
 
-    try {
-        await fs.mkdir("products", { recursive: true })
-        const filePath = `products/${crypto.randomUUID()}-${data.file.name}`
-        await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()))
+    await fs.mkdir("public/products", { recursive: true })
+    const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`
+    await fs.writeFile(
+        `public${imagePath}`,
+        Buffer.from(await data.image.arrayBuffer())
+    )
 
-        await fs.mkdir("public/products", { recursive: true })
-        const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`
-        await fs.writeFile(
-            `public${imagePath}`,
-            Buffer.from(await data.image.arrayBuffer())
-        )
+    await db.product.create({
+        data: {
+            isAvailableForPurchase: false,
+            name: data.name,
+            description: data.description,
+            priceInCents: data.priceInCents,
+            filePath,
+            imagePath,
+        },
+    })
 
-        await db.product.create({
-            data: {
-                isAvailableForPurchase: false,
-                name: data.name,
-                description: data.description,
-                priceInCents: data.priceInCents,
-                filePath,
-                imagePath,
-            },
-        });
+    revalidatePath("/")
+    revalidatePath("/products")
 
-        revalidatePath("/");
-        revalidatePath("/products");
-
-        redirect("/admin/products");
-    } catch (error) {
-        console.error("Error adding product:", error);
-        throw new Error("Failed to add product");
-    }
-
-    return prevState;
+    redirect("/admin/products")
 }
 
 const editSchema = addSchema.extend({
@@ -138,7 +126,6 @@ export async function deleteProduct(id: string) {
 
     await fs.unlink(product.filePath)
     await fs.unlink(`public${product.imagePath}`)
-    cacheManager.invalidate(["getMostPopularProducts"]);
 
     revalidatePath("/")
     revalidatePath("/products")
