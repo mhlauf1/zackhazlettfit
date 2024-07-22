@@ -14,10 +14,14 @@ export async function GET(
         });
 
         if (data == null) {
+            console.error("Download verification not found or expired");
             return NextResponse.redirect(new URL("/products/download/expired", req.url));
         }
 
-        const pathToFile = path.join(process.cwd(), data.product.filePath);
+        // Resolve the file path using __dirname
+        const pathToFile = path.join(__dirname, '..', '..', data.product.filePath);
+        console.log(`Resolved path to file: ${pathToFile}`);
+
         const { size } = await fs.stat(pathToFile);
         const file = await fs.readFile(pathToFile);
         const extension = data.product.filePath.split(".").pop();
