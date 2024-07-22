@@ -30,6 +30,8 @@ export async function addProduct(
 
     const data = result.data;
 
+    console.log(data, 'data here on add product')
+
     try {
         await fs.mkdir("products", { recursive: true })
         const filePath = `products/${crypto.randomUUID()}-${data.file.name}`
