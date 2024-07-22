@@ -1,14 +1,25 @@
 import { ProductCard, ProductCardSkeleton } from "../_components/ProductCard";
 import db from "@/db/db";
-import { cache } from "@/lib/cache";
+import cacheManager from "@/lib/cacheManager";
 import { Suspense } from "react";
 
-const getProducts = cache(() => {
-  return db.product.findMany({
+const CACHE_KEY = "getProducts";
+const CACHE_TTL = 60 * 60 * 24 * 1000; // 24 hours in milliseconds
+
+async function getProducts() {
+  const cachedProducts = cacheManager.get(CACHE_KEY);
+  if (cachedProducts) {
+    return cachedProducts;
+  }
+
+  const products = await db.product.findMany({
     where: { isAvailableForPurchase: true },
     orderBy: { name: "asc" },
   });
-}, ["/products", "getProducts"]);
+
+  cacheManager.set(CACHE_KEY, products, CACHE_TTL);
+  return products;
+}
 
 export default function ProductsPage() {
   return (
@@ -19,10 +30,10 @@ export default function ProductsPage() {
             Explore Programs
           </span>
           <h1 className="mb-4 mt-6 md:mt-8 w-full text-3xl font-semibold tracking-tighter text-neutral-900 md:text-5xl lg:text-6xl">
-            Fitness and Nutritoin Programs
+            Fitness and Nutrition Programs
           </h1>
           <div className="flex flex-col md:w-7/12">
-            <p className="mt-2 text-md md:text-lg  text-neutral-700">
+            <p className="mt-2 text-md md:text-lg text-neutral-700">
               Dedicated to transforming lives through personalized fitness and
               nutrition programs. Here, we believe in fitness as a lifestyle,
               not a quick fix.
