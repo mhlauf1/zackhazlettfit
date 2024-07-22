@@ -1,39 +1,28 @@
-import db from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
-import path from "path"; // Import the path module
+import db from "@/db/db"
+import { notFound } from "next/navigation"
 
 export async function GET(
     req: NextRequest,
-    { params: { downloadVerificationId } }: { params: { downloadVerificationId: string } }
+    { params: { id } }: { params: { id: string } }
 ) {
-    try {
-        const data = await db.downloadVerification.findUnique({
-            where: { id: downloadVerificationId, expiresAt: { gt: new Date() } },
-            select: { product: { select: { filePath: true, name: true } } },
-        });
+    const product = await db.product.findUnique({
+        where: { id },
+        select: { filePath: true, name: true },
+    })
 
-        if (data == null) {
-            console.error("Download verification not found or expired");
-            return NextResponse.redirect(new URL("/products/download/expired", req.url));
-        }
+    if (product == null) return notFound()
+    console.log(`Resolved path to file: ${product.filePath}`);
 
-        // Resolve the file path using __dirname
-        const pathToFile = data.product.filePath;
-        console.log(`Resolved path to file: ${pathToFile}`);
+    const { size } = await fs.stat(product.filePath)
+    const file = await fs.readFile(product.filePath)
+    const extension = product.filePath.split(".").pop()
 
-        const { size } = await fs.stat(pathToFile);
-        const file = await fs.readFile(pathToFile);
-        const extension = data.product.filePath.split(".").pop();
-
-        return new NextResponse(file, {
-            headers: {
-                "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
-                "Content-Length": size.toString(),
-            },
-        });
-    } catch (error) {
-        console.error("Error handling download request:", error);
-        return new NextResponse("Internal Server Error", { status: 500 });
-    }
+    return new NextResponse(file, {
+        headers: {
+            "Content-Disposition": `attachment; filename="${product.name}.${extension}"`,
+            "Content-Length": size.toString(),
+        },
+    })
 }
