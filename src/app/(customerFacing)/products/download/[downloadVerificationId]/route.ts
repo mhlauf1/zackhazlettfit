@@ -1,27 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
+import { NextRequest, NextResponse } from "next/server"
+import fs from "fs/promises"
 import db from "@/db/db"
-import { notFound } from "next/navigation"
 
 export async function GET(
     req: NextRequest,
-    { params: { id } }: { params: { id: string } }
+    {
+        params: { downloadVerificationId },
+    }: { params: { downloadVerificationId: string } }
 ) {
-    const product = await db.product.findUnique({
-        where: { id },
-        select: { filePath: true, name: true },
+    const data = await db.downloadVerification.findUnique({
+        where: { id: downloadVerificationId, expiresAt: { gt: new Date() } },
+        select: { product: { select: { filePath: true, name: true } } },
     })
 
-    if (product == null) return notFound()
-    console.log(`Resolved path to file: ${product.filePath}`);
+    if (data == null) {
+        return NextResponse.redirect(new URL("/products/download/expired", req.url))
+    }
+    console.log(`Resolved path to file: ${data.product.filePath}`);
 
-    const { size } = await fs.stat(product.filePath)
-    const file = await fs.readFile(product.filePath)
-    const extension = product.filePath.split(".").pop()
+    const { size } = await fs.stat(data.product.filePath)
+    const file = await fs.readFile(data.product.filePath)
+    const extension = data.product.filePath.split(".").pop()
 
     return new NextResponse(file, {
         headers: {
-            "Content-Disposition": `attachment; filename="${product.name}.${extension}"`,
+            "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
             "Content-Length": size.toString(),
         },
     })
