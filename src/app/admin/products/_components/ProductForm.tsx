@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatters";
 import { useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 
@@ -20,16 +20,34 @@ interface FormErrors {
 }
 
 export function ProductForm({ product }: { product?: Product | null }) {
-  const [error, action] = useFormState<FormErrors>(
-    product == null ? addProduct : updateProduct.bind(null, product.id),
-    {}
-  );
+  const [errors, setErrors] = useState<FormErrors>({});
   const [priceInCents, setPriceInCents] = useState<number | undefined>(
     product?.priceInCents
   );
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const action =
+      product == null ? addProduct : updateProduct.bind(null, product.id);
+
+    try {
+      await action({}, formData);
+      setErrors({});
+      // Optionally redirect or show success message
+    } catch (error) {
+      if (error instanceof Error) {
+        const formErrors = error as unknown as FormErrors;
+        setErrors(formErrors);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    }
+  };
+
   return (
-    <form action={action} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8">
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input
@@ -39,8 +57,8 @@ export function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.name || ""}
         />
-        {error?.name && (
-          <div className="text-destructive">{error.name.join(", ")}</div>
+        {errors.name && (
+          <div className="text-destructive">{errors.name.join(", ")}</div>
         )}
       </div>
       <div className="space-y-2">
@@ -56,9 +74,9 @@ export function ProductForm({ product }: { product?: Product | null }) {
         <div className="text-muted-foreground">
           {formatCurrency((priceInCents || 0) / 100)}
         </div>
-        {error?.priceInCents && (
+        {errors.priceInCents && (
           <div className="text-destructive">
-            {error.priceInCents.join(", ")}
+            {errors.priceInCents.join(", ")}
           </div>
         )}
       </div>
@@ -70,8 +88,10 @@ export function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.description}
         />
-        {error?.description && (
-          <div className="text-destructive">{error.description.join(", ")}</div>
+        {errors.description && (
+          <div className="text-destructive">
+            {errors.description.join(", ")}
+          </div>
         )}
       </div>
       <div className="space-y-2">
@@ -80,8 +100,8 @@ export function ProductForm({ product }: { product?: Product | null }) {
         {product != null && (
           <div className="text-muted-foreground">{product.filePath}</div>
         )}
-        {error?.file && (
-          <div className="text-destructive">{error.file.join(", ")}</div>
+        {errors.file && (
+          <div className="text-destructive">{errors.file.join(", ")}</div>
         )}
       </div>
       <div className="space-y-2">
@@ -95,8 +115,8 @@ export function ProductForm({ product }: { product?: Product | null }) {
             alt="Product Image"
           />
         )}
-        {error?.image && (
-          <div className="text-destructive">{error.image.join(", ")}</div>
+        {errors.image && (
+          <div className="text-destructive">{errors.image.join(", ")}</div>
         )}
       </div>
       <SubmitButton />
