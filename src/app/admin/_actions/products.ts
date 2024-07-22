@@ -31,18 +31,16 @@ export async function addProduct(
     const data = result.data;
 
     try {
-        // Ensure 'products' directory exists
-        await fs.mkdir("public/products", { recursive: true });
-        const filePath = `public/products/${crypto.randomUUID()}-${data.file.name}`;
-        await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
+        await fs.mkdir("products", { recursive: true })
+        const filePath = `products/${crypto.randomUUID()}-${data.file.name}`
+        await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()))
 
-        // Ensure 'public/products' directory exists for images
-        await fs.mkdir("public/products", { recursive: true });
-        const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
+        await fs.mkdir("public/products", { recursive: true })
+        const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`
         await fs.writeFile(
             `public${imagePath}`,
             Buffer.from(await data.image.arrayBuffer())
-        );
+        )
 
         await db.product.create({
             data: {
