@@ -19,7 +19,7 @@ export async function GET(
         }
 
         // Resolve the file path using __dirname
-        const pathToFile = path.join(__dirname, '..', '..', data.product.filePath);
+        const pathToFile = data.product.filePath;
         console.log(`Resolved path to file: ${pathToFile}`);
 
         const { size } = await fs.stat(pathToFile);
