@@ -80,7 +80,7 @@
   line-height: 100%;
 }
 
-@media (max-width: 766px) {
+@media (max-width: 767px) {
   .heroTextSize {
     font-size: 3rem;
   }
