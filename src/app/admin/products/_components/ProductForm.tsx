@@ -11,8 +11,16 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 
+interface FormErrors {
+  name?: string[];
+  priceInCents?: string[];
+  description?: string[];
+  file?: string[];
+  image?: string[];
+}
+
 export function ProductForm({ product }: { product?: Product | null }) {
-  const [error, action] = useFormState(
+  const [error, action] = useFormState<FormErrors>(
     product == null ? addProduct : updateProduct.bind(null, product.id),
     {}
   );
@@ -31,7 +39,9 @@ export function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.name || ""}
         />
-        {error.name && <div className="text-destructive">{error.name}</div>}
+        {error?.name && (
+          <div className="text-destructive">{error.name.join(", ")}</div>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="priceInCents">Price In Cents</Label>
@@ -46,8 +56,10 @@ export function ProductForm({ product }: { product?: Product | null }) {
         <div className="text-muted-foreground">
           {formatCurrency((priceInCents || 0) / 100)}
         </div>
-        {error.priceInCents && (
-          <div className="text-destructive">{error.priceInCents}</div>
+        {error?.priceInCents && (
+          <div className="text-destructive">
+            {error.priceInCents.join(", ")}
+          </div>
         )}
       </div>
       <div className="space-y-2">
@@ -58,8 +70,8 @@ export function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.description}
         />
-        {error.description && (
-          <div className="text-destructive">{error.description}</div>
+        {error?.description && (
+          <div className="text-destructive">{error.description.join(", ")}</div>
         )}
       </div>
       <div className="space-y-2">
@@ -68,7 +80,9 @@ export function ProductForm({ product }: { product?: Product | null }) {
         {product != null && (
           <div className="text-muted-foreground">{product.filePath}</div>
         )}
-        {error.file && <div className="text-destructive">{error.file}</div>}
+        {error?.file && (
+          <div className="text-destructive">{error.file.join(", ")}</div>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="image">Image</Label>
@@ -81,7 +95,9 @@ export function ProductForm({ product }: { product?: Product | null }) {
             alt="Product Image"
           />
         )}
-        {error.image && <div className="text-destructive">{error.image}</div>}
+        {error?.image && (
+          <div className="text-destructive">{error.image.join(", ")}</div>
+        )}
       </div>
       <SubmitButton />
     </form>
