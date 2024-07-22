@@ -14,7 +14,7 @@ export default function AdminLayout({
       <SideBar />
       <div className="flex-1 px-8 py-6">
         {/* <TopBar /> */}
-        <div className="mt-12">{children}</div>
+        <div className="mt-6">{children}</div>
       </div>
     </div>
   );

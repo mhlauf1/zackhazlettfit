@@ -15,7 +15,7 @@ export default function SideBar() {
   const isActive = (path: string) => pathname === path;
 
   const linkClasses = (path: string) =>
-    `flex items-center gap-x-3 py-3 px-4 rounded-xl duration-300 ${
+    `flex items-center gap-x-3 p-2 rounded-lg duration-300 ${
       isActive(path)
         ? "bg-neutral-200 text-neutral-900"
         : "text-neutral-500 hover:text-neutral-900"
@@ -24,27 +24,21 @@ export default function SideBar() {
   return (
     <div className="sticky hidden md:flex justify-between py-8 h-full min-h-screen w-auto  bg-neutral-50 border-r flex-col items-center">
       <div className="flex px-4 flex-col">
-        <h2 className="text-center text-neutral-700">ZHF</h2>
-        <div className="h-[1px] mt-4 bg-neutral-200" />
         <div className="space-y-2 mt-4">
           <Link className={linkClasses("/admin")} href="/admin">
             <MdOutlineDashboard size={20} />
-            <span>Dashboard</span>
           </Link>
           <Link
             className={linkClasses("/admin/products")}
             href="/admin/products"
           >
             <TiDocument size={20} />
-            <span>Programs</span>
           </Link>
           <Link className={linkClasses("/admin/users")} href="/admin/users">
             <FiUsers size={20} />
-            <span>Customer</span>
           </Link>
           <Link className={linkClasses("/admin/orders")} href="/admin/orders">
             <BsBank size={20} />
-            <span>Sales</span>
           </Link>
         </div>
       </div>

@@ -24,9 +24,9 @@ export default function HomeLayout({
   const currentDate = today.toLocaleDateString(undefined, options);
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center mb-6">
-        <PageHeader>Sales Analysis</PageHeader>
-        <span>{currentDate}</span>
+      <div className="flex gap-x-4 items-center mb-6">
+        <p className="text-neutral-500">Dashboard</p>
+        <p>Products</p>
       </div>
       <Dashboard
         salesData={salesData}
