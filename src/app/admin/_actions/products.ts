@@ -55,6 +55,7 @@ export async function addProduct(prevState: unknown, formData: FormData) {
     redirect("/admin/products")
 }
 
+
 const editSchema = addSchema.extend({
     file: fileSchema.optional(),
     image: imageSchema.optional(),
