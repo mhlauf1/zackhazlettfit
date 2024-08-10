@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       );
     }
     return NextResponse.json(
-      { error: 'Error subscribing to updates from Zack Hazlett Fitness.' },
+      { error: 'Error subscribin to updates from Zack Hazlett Fitness.' },
       { status: 500 }
     );
   }
