@@ -30,7 +30,7 @@ export async function GET(req: NextRequest, { params: { downloadVerificationId }
             },
         });
     } catch (error) {
-        console.error(`Error reading file at path: ${filePath}`, error);
+        console.error(`Error readin file at path: ${filePath}`, error);
         return NextResponse.redirect(new URL("/products/download/error", req.url));
     }
 }
