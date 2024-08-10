@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import fs from "fs/promises"
+import path from "path"  // Import the path module
 import db from "@/db/db"
 
 export async function GET(req: NextRequest, { params: { downloadVerificationId }, }: { params: { downloadVerificationId: string } }) {
@@ -13,10 +14,13 @@ export async function GET(req: NextRequest, { params: { downloadVerificationId }
         return NextResponse.redirect(new URL("/products/download/expired", req.url))
     }
 
-    // Ensure that the filePath has a leading slash
-    let filePath = data.product.filePath.startsWith('/') ? data.product.filePath : `/${data.product.filePath}`;
+    // Ensure that the filePath has a leading slash if necessary
+    let filePath = data.product.filePath.startsWith("/") ? data.product.filePath : `/${data.product.filePath}`;
 
-    console.log(`Resolved path to file: ${filePath}`);
+    // Convert to an absolute path
+    filePath = path.resolve(process.cwd(), filePath);  // Resolve the absolute path based on the current working directory
+
+    console.log(`Resolved absolute path to file: ${filePath}`);
 
     try {
         const { size } = await fs.stat(filePath);
@@ -30,7 +34,7 @@ export async function GET(req: NextRequest, { params: { downloadVerificationId }
             },
         });
     } catch (error) {
-        console.error(`Error readin file at path: ${filePath}`, error);
+        console.error(`Error reading file at path: ${filePath}`, error);
         return NextResponse.redirect(new URL("/products/download/error", req.url));
     }
 }
