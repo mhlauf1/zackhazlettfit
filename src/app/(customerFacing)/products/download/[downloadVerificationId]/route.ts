@@ -13,17 +13,15 @@ export async function GET(req: NextRequest, { params: { downloadVerificationId }
         return NextResponse.redirect(new URL("/products/download/expired", req.url))
     }
 
-    // Sanitize the filePath by replacing spaces with underscores or removing them
-    let sanitizedFilePath = data.product.filePath.replace(/\s+/g, '_'); // or use '' to remove spaces entirely
+    // Ensure that the filePath has a leading slash
+    let filePath = data.product.filePath.startsWith('/') ? data.product.filePath : `/${data.product.filePath}`;
 
-    console.log(`Original file path: ${data.product.filePath}`);
-    console.log(`Sanitized file path: ${sanitizedFilePath}`);
+    console.log(`Resolved path to file: ${filePath}`);
 
     try {
-        // Attempt to read the file at the original path
-        const { size } = await fs.stat(data.product.filePath);
-        const file = await fs.readFile(data.product.filePath);
-        const extension = data.product.filePath.split(".").pop();
+        const { size } = await fs.stat(filePath);
+        const file = await fs.readFile(filePath);
+        const extension = filePath.split(".").pop();
 
         return new NextResponse(file, {
             headers: {
@@ -32,23 +30,7 @@ export async function GET(req: NextRequest, { params: { downloadVerificationId }
             },
         });
     } catch (error) {
-        console.error(`Error reading file at original path: ${data.product.filePath}`, error);
-    }
-
-    try {
-        // Attempt to read the file at the sanitized path
-        const { size } = await fs.stat(sanitizedFilePath);
-        const file = await fs.readFile(sanitizedFilePath);
-        const extension = sanitizedFilePath.split(".").pop();
-
-        return new NextResponse(file, {
-            headers: {
-                "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
-                "Content-Length": size.toString(),
-            },
-        });
-    } catch (error) {
-        console.error(`Error reading file at sanitized path: ${sanitizedFilePath}`, error);
+        console.error(`Error reading file at path: ${filePath}`, error);
         return NextResponse.redirect(new URL("/products/download/error", req.url));
     }
 }
