@@ -1,47 +1,46 @@
-import { NextRequest, NextResponse } from "next/server"
-import fs from "fs/promises"
-import path from "path"
-import db from "@/db/db"
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params: { downloadVerificationId }, }: { params: { downloadVerificationId: string } }) {
+export async function GET(req: NextRequest, { params: { downloadVerificationId } }: { params: { downloadVerificationId: string } }) {
 
+    // Fetch the download verification data from the database
     const data = await db.downloadVerification.findUnique({
         where: { id: downloadVerificationId, expiresAt: { gt: new Date() } },
         select: { product: { select: { filePath: true, name: true } } },
     });
 
+    // If the data doesn't exist or has expired, redirect to the expired page
     if (data == null) {
         return NextResponse.redirect(new URL("/products/download/expired", req.url));
     }
 
-    // Construct the path relative to the public directory
-    const hazlettPath = path.resolve(process.cwd(), 'public', data.product.filePath);
+    // Assuming filePath is relative to the public directory
+    const fileName = path.basename(data.product.filePath); // Extract the file name
+    const fileUrl = `https://www.zackhazlettfit.com/products/${fileName}`;
 
-    // Logging the paths
-    console.log(`Resolved absolute hazlettPath: ${hazlettPath}`);
+    console.log(`Fetching file from URL: ${fileUrl}`);
 
     try {
-        // Fetching file stats
-        const { size } = await fs.stat(hazlettPath);
-        console.log(`File size: ${size} bytes`);
+        // Fetch the file from the external URL
+        const fileResponse = await fetch(fileUrl);
 
-        // Reading the file
-        const file = await fs.readFile(hazlettPath);
-        console.log(`File read successfully from: ${hazlettPath}`);
+        if (!fileResponse.ok) {
+            throw new Error(`Failed to fetch file from ${fileUrl}`);
+        }
 
-        // Extracting the file extension
-        const extension = hazlettPath.split(".").pop();
-        console.log(`File extension: ${extension}`);
+        // Read the file content
+        const fileBuffer = await fileResponse.arrayBuffer();
+        const extension = fileName.split(".").pop();
+        const fileNameWithExtension = `${data.product.name}.${extension}`;
 
-        // Returning the file as a response
-        return new NextResponse(file, {
+        return new NextResponse(fileBuffer, {
             headers: {
-                "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
-                "Content-Length": size.toString(),
+                "Content-Disposition": `attachment; filename="${fileNameWithExtension}"`,
+                "Content-Type": fileResponse.headers.get("Content-Type") || "application/octet-stream",
+                "Content-Length": fileResponse.headers.get("Content-Length") || fileBuffer.byteLength.toString(),
             },
         });
     } catch (error) {
-        console.error(`Error reading file at path: ${hazlettPath}`, error);
+        console.error(`Error downloading file: ${error.message}`);
         return NextResponse.redirect(new URL("/products/download/error", req.url));
     }
 }
