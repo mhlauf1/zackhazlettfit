@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"
+import path from "path"
+import db from "@/db/db"
 
 export async function GET(req: NextRequest, { params: { downloadVerificationId } }: { params: { downloadVerificationId: string } }) {
 
